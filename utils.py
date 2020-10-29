@@ -6,7 +6,7 @@ from statistics import stdev as stdevfun
 def readDataset():
     """Read the Image Segmentation Dataset: https://archive.ics.uci.edu/ml/datasets/Image+Segmentation"""
     # Read .data file
-    with open('segmentation.data') as raw:
+    with open('Data//segmentation.data') as raw:
         data = [line.strip().split(',') for line in raw.readlines()]
     # Get rid of meta data
     data = data[5:]
