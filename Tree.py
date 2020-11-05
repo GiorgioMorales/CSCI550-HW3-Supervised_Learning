@@ -31,50 +31,69 @@ def most_common_class(votes: list):
                     Class Definition
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class node:
+    def __init__(self, c, split=None):
+        self.c = c
+        self.split = split
+        self.child = []
+
+    def getVal(self):
+        if self.split:
+            return self.split
+        else:
+            return self.c
+
+    def getLeft(self):
+        return self.child[0]
+
+    def getRight(self):
+        return self.child[1]
 
 
-class KNN:
-    """K-NN Classifier"""
+class Split:
+    def __init__(self, xi, v):
+        self.xi = xi
+        self.v = v
 
-    def __init__(self, neighbors: int):
-        """k-NN constructor
-        @param neighbors: Number of nearest neighbors
+
+class Tree:
+    """Decision Tree Classifier"""
+
+    def __init__(self):
+        """Decision Tree constructor
         """
-        self.k = neighbors
+        self.node = None
 
-    def get_k_neighbors(self, data: np.ndarray, new_sample: list):
-        """Get the k nearest neighbors"""
-        neighbors = []
-        for n in range(len(data)):
-            # Extract the features
-            x = data[n].tolist()[:-1]
-            # Extract the last column (target)
-            y = data[n].tolist()[-1]
-            # Calculate distances
-            dist = distance(x, new_sample)
-            # Push the distance and neighbors onto the heap
-            heapq.heappush(neighbors, (dist, n, y))
-        # Store off the neighbors with the smallest distance
-        kNeighbors = heapq.nsmallest(self.k, neighbors)
-        # Return the neighbors with the smallest distance
-        return kNeighbors
+    def evaluate(self, data, X):
+        return 1,2
 
-    def classify(self, trainData: np.ndarray, testData: np.ndarray):
+    def tree(self, trainData: np.ndarray, eda, pi):
+        data = trainData.tolist()
+        n = len(data[:-1])
+        y, nj = np.unique(data[-1], return_counts=True)
+        purity = np.max(nj/n)
+        if n <= eda or purity >= pi:
+            return y[np.argmax(nj/n)]
+        split = None
+        score = 0
+        for i in range(len(data[:-1][0])):
+            v, s = self.evaluate(trainData, data[:, i])
+            if s > score:
+                split = Split(i, v)
+                score = s
+        DY = np.take(data, np.argwhere(data[:, split.xi] <= split.v))
+
+
+    def classify(self, tree, testData: np.ndarray):
         """Estimate the class of each of the data point in the testData array"""
         classifications = []
         for sample in testData:
             # Create a list from the data source that we take in
             new_vector = sample.tolist()[:-1]
-            # Get the k-nearest neighbors
-            neighbors = self.get_k_neighbors(trainData, new_vector)
-            # Get the target values of the k-neighbors
-            votes = [trainData[n[1]].tolist()[-1] for n in neighbors]
-            # Most common class depending on the vote data above
-            estimate = most_common_class(votes)
+            estimate = None
             # Add the ground truth-estimate pair to the list too be returned
             classifications.append([int(sample.tolist()[-1]), estimate])
         return classifications
-
 
 if __name__ == '__main__':
     # Load Image Segmentation dataset
@@ -88,14 +107,14 @@ if __name__ == '__main__':
     f1scores = np.zeros((kval, 7))
     count = 0
     for k in range(4, 11):
-        # Initialize kNN object
-        knn_classifier = KNN(neighbors=k)
-
+        # Initialize Decision Tree object
+        tree_classifier = Tree()
+        tree = tree_classifier.tree(trainData=train, eda=5, pi=0.1)
         # Cross-validation
         f1sc = []
         for v in range(kval):
             # Get the prediction results for the validation set
-            results = np.array(knn_classifier.classify(train[v], test[v]))
+            results = np.array(tree_classifier.classify(train[v], test[v]))
             f1sc.append(f1_score(results[:, 0], results[:, 1], len(np.unique(results[:, 0]))))
 
         f1scores[:, count] = f1sc
