@@ -123,7 +123,7 @@ class Tree:
             return y[np.argmax(nj / n)]
         split = None
         score = 0
-        for i in range(len(data[:-1][0])):
+        for i in range(len(data[0][:-1])):
             v, s = self.evaluate(trainData, data[:, i], i, y)
             if s > score:
                 split = Split(i, v)
@@ -136,9 +136,15 @@ class Tree:
         """Estimate the class of each of the data point in the testData array"""
         classifications = []
         for sample in testData:
+            current = tree
             # Create a list from the data source that we take in
             new_vector = sample.tolist()[:-1]
-            estimate = None
+            while type(current) is Decision:
+                if new_vector[current.split.xi] <= current.split.v:
+                    current = current.left
+                else:
+                    current = current.right
+            estimate = current
             # Add the ground truth-estimate pair to the list too be returned
             classifications.append([int(sample.tolist()[-1]), estimate])
         return classifications
@@ -165,9 +171,5 @@ if __name__ == '__main__':
         results = np.array(tree_classifier.classify(tree, test[v]))
         f1sc.append(f1_score(results[:, 0], results[:, 1], len(np.unique(results[:, 0]))))
 
-        f1scores[:, count] = f1sc
-        count += 1
-
-    pd.DataFrame({'kNN-10': f1scores[:, 0], 'kNN-9': f1scores[:, 1], 'kNN-8': f1scores[:, 2], 'kNN-7': f1scores[:, 3],
-                  'kNN-6': f1scores[:, 4], 'kNN-5': f1scores[:, 5],
-                  'kNN-4': f1scores[:, 5]}).plot(kind='box', title="Macro F1-score. k=4-10")
+    pd.DataFrame({'Decision Tree': f1sc}).plot(kind='box', title="Macro F1-score.")
+    pass
