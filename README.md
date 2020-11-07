@@ -2,7 +2,7 @@
 
 Our system uses either the K-Nearest-Neighbor (KNN) or the Decision Tree algorithm to predict the class of input vectors. The KNN algorithm determines the nearest k neighbors and predicts the classification of the vector based on the neighboring values. This algorithm benefits when the dataset is naturally clustered. This algorithm is a lazy training algorithm, being that the model is only generated when a test set and input data is submitted, making it slower to classify
 
-The Decision Tree is also a predictive algorithm, but it creates splitting nodes to form a tree. The splitting node looks at a vector's $x_i$ value and directs the vector based on a truthy value. A given vector then follows the paths returned by the splitting nodes until a classification is predicted. This algorithm is benefited when there are clear single axis hyper-planes in the data. This algorithm is more proactive in it's learning then the K-NN algorithm, so it is slower to train, but significantly faster to classify then K-NN. \\
+The Decision Tree is also a predictive algorithm, but it creates splitting nodes to form a tree. The splitting node looks at a vector's $x_i$ value and directs the vector based on a truthy value. A given vector then follows the paths returned by the splitting nodes until a classification is predicted. This algorithm is benefited when there are clear single axis hyper-planes in the data. This algorithm is more proactive in it's learning then the K-NN algorithm, so it is slower to train, but significantly faster to classify then K-NN.
 
 ## Usage
 
