@@ -1,4 +1,4 @@
-# Supervised_Learning
+# Supervised Learning: Decision Trees and k-NN
 
 Our system uses either the K-Nearest-Neighbor (KNN) or the Decision Tree algorithm to predict the class of input vectors. The KNN algorithm determines the nearest k neighbors and predicts the classification of the vector based on the neighboring values. This algorithm benefits when the dataset is naturally clustered. This algorithm is a lazy training algorithm, being that the model is only generated when a test set and input data is submitted, making it slower to classify
 
